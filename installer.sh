@@ -842,7 +842,7 @@ exec_prepare_disk() {
         # Format disk
         mkfs.fat -F 32 -n BOOT "$ARCH_OS_BOOT_PARTITION"
         [ "$ARCH_OS_ENCRYPTION_ENABLED" = "true" ] && mkfs.ext4 -F -L ROOT /dev/mapper/cryptroot
-        [ "$ARCH_OS_ENCRYPTION_ENABLED" = "false" ] && mkfs.ext4 -F -L ROOT "$ARCH_OS_ROOT_PARTITION"
+        [ "$ARCH_OS_ENCRYPTION_ENABLED" = "false" ] && mkfs.xfs -f -L ROOT "$ARCH_OS_ROOT_PARTITION"
 
         # Mount disk to /mnt
         [ "$ARCH_OS_ENCRYPTION_ENABLED" = "true" ] && mount -v /dev/mapper/cryptroot /mnt
@@ -2072,10 +2072,10 @@ process_return() {
 print_header() {
     local title="$1"
     clear && gum_purple '
- █████  ██████   ██████ ██   ██      ██████  ███████ 
-██   ██ ██   ██ ██      ██   ██     ██    ██ ██      
-███████ ██████  ██      ███████     ██    ██ ███████ 
-██   ██ ██   ██ ██      ██   ██     ██    ██      ██ 
+ █████  ██████   ██████ ██   ██      ██████  ███████
+██   ██ ██   ██ ██      ██   ██     ██    ██ ██
+███████ ██████  ██      ███████     ██    ██ ███████
+██   ██ ██   ██ ██      ██   ██     ██    ██      ██
 ██   ██ ██   ██  ██████ ██   ██      ██████  ███████'
     local header_version="               v. ${VERSION}"
     [ "$DEBUG" = "true" ] && header_version="               d. ${VERSION}"
