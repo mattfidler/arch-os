@@ -1016,6 +1016,8 @@ exec_install_desktop() {
      echo -e "\n[bioarchlinux]\nServer = https://mirrors.xtom.com/bioarchlinux/\$arch" \
          | tee -a /mnt/etc/pacman.conf
 
+     arch-chroot /mnt pacman -Sy
+
      chroot_pacman_install bioarchlinux-keyring
 
      if [ "$ARCH_OS_DESKTOP_ENABLED" = "true" ]; then
