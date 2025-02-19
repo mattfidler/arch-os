@@ -1010,6 +1010,14 @@ exec_pacstrap_core() {
 
 exec_install_desktop() {
     local process_name="GNOME Desktop"
+    # Add bspm
+    # https://github.com/cran4linux/bspm?tab=readme-ov-file#arch
+     echo -e "\n[bioarchlinux]\nServer = https://repo.bioarchlinux.org/\$arch" \
+         | tee -a /mnto/etc/pacman.conf
+
+     pacman-key --recv-keys B1F96021DB62254D
+     pacman-key --lsign-key B1F96021DB62254D
+
     if [ "$ARCH_OS_DESKTOP_ENABLED" = "true" ]; then
         process_init "$process_name"
         (
@@ -1045,7 +1053,7 @@ exec_install_desktop() {
                 packages+=(nautilus-image-converter)
 
                 # Runtimes, Builder & Helper
-                packages+=(gdb valgrind r gcc-fortran python go rust nodejs npm lua cmake jq zenity gum fzf)
+                packages+=(gdb valgrind r gcc-fortran r-bspm python go rust nodejs npm lua cmake jq zenity gum fzf)
 
                 # Certificates
                 packages+=(ca-certificates)
@@ -1322,6 +1330,8 @@ exec_install_desktop() {
                     echo "gsettings set org.gnome.shell favorite-apps \"['org.gnome.Console.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Software.desktop', 'org.gnome.Settings.desktop']\""
                 } >>"/mnt/home/${ARCH_OS_USERNAME}/${INIT_FILENAME}.sh"
             fi
+
+            echo "bspm::enable(); r <- getOption('repos'); r['CRAN'] <- 'https://cloud.r-project.org/'; options(repos = r)" >> /mnt/usr/lib64/R/etc/Rprofile.site
 
             # Set correct permissions
             arch-chroot /mnt chown -R "$ARCH_OS_USERNAME":"$ARCH_OS_USERNAME" "/home/${ARCH_OS_USERNAME}"
