@@ -841,7 +841,7 @@ exec_prepare_disk() {
 
         # Format disk
         mkfs.fat -F 32 -n BOOT "$ARCH_OS_BOOT_PARTITION"
-        [ "$ARCH_OS_ENCRYPTION_ENABLED" = "true" ] && mkfs.xfs -f -L ROOT /dev/mapper/cryptroot
+        [ "$ARCH_OS_ENCRYPTION_ENABLED" = "true" ] && mkfs.ext4 -F -L ROOT /dev/mapper/cryptroot
         [ "$ARCH_OS_ENCRYPTION_ENABLED" = "false" ] && mkfs.xfs -f -L ROOT "$ARCH_OS_ROOT_PARTITION"
 
         # Mount disk to /mnt
@@ -1289,6 +1289,7 @@ exec_install_desktop() {
             if [ "$ARCH_OS_SHELL_ENHANCEMENT_ENABLED" = "true" ]; then
                 echo -e '[Desktop Entry]\nType=Application\nHidden=true' >"/mnt/home/${ARCH_OS_USERNAME}/.local/share/applications/fish.desktop"
                 echo -e '[Desktop Entry]\nType=Application\nHidden=true' >"/mnt/home/${ARCH_OS_USERNAME}/.local/share/applications/btop.desktop"
+                echo -e '[Desktop Entry]\nType=Application\nHidden=true' >"/mnt/home/${ARCH_OS_USERNAME}/.local/share/applications/nvim.desktop"
             fi
 
             # Add Init script
@@ -1530,7 +1531,7 @@ exec_install_shell_enhancement() {
             [ "$DEBUG" = "true" ] && sleep 1 && process_return 0 # If debug mode then return
 
             # Install packages
-            local packages=(git starship eza bat zoxide fd fzf fastfetch mc btop nano man-db bash-completion nano-syntax-highlighting ttf-firacode-nerd ttf-nerd-fonts-symbols)
+            local packages=(git starship eza bat zoxide fd fzf fastfetch mc btop nano neovim python-pynvim man-db bash-completion nano-syntax-highlighting ttf-firacode-nerd ttf-nerd-fonts-symbols)
             chroot_pacman_install "${packages[@]}"
 
             # Create fastfetch config dirs
@@ -1775,6 +1776,31 @@ exec_install_shell_enhancement() {
             sed -i "s/^# set linenumbers/set linenumbers/" /mnt/etc/nanorc
             sed -i "s/^# set minibar/set minibar/" /mnt/etc/nanorc
             sed -i 's;^# include /usr/share/nano/\*\.nanorc;include /usr/share/nano/*.nanorc\ninclude /usr/share/nano/extra/*.nanorc\ninclude /usr/share/nano-syntax-highlighting/*.nanorc;g' /mnt/etc/nanorc
+
+            # Set neovim links
+            arch-chroot /mnt ln -s /usr/bin/nvim /usr/bin/vim
+            arch-chroot /mnt ln -s /usr/bin/nvim /usr/bin/vi
+
+            # Install spacevim for user (colorful vim ide) - https://spacevim.org/quick-start-guide/#installation
+            if curl -sLf https://spacevim.org/install.sh >"/mnt/home/${ARCH_OS_USERNAME}/spacevim-installer.sh"; then
+
+                # Make executable
+                chmod +x "/mnt/home/${ARCH_OS_USERNAME}/spacevim-installer.sh"
+
+                # Replace to git absolute path
+                sed -i 's/git clone/\/usr\/bin\/git clone/g' "/mnt/home/${ARCH_OS_USERNAME}/spacevim-installer.sh"
+                sed -i 's/git pull/\/usr\/bin\/git pull/g' "/mnt/home/${ARCH_OS_USERNAME}/spacevim-installer.sh"
+                sed -i "s/need_cmd 'git'/need_cmd '\/usr\/bin\/git'/g" "/mnt/home/${ARCH_OS_USERNAME}/spacevim-installer.sh"
+
+                # Set permissions
+                arch-chroot /mnt chown -R "$ARCH_OS_USERNAME":"$ARCH_OS_USERNAME" "/home/${ARCH_OS_USERNAME}"
+
+                # Execute spacevim installer
+                arch-chroot /mnt /usr/bin/runuser -u "$ARCH_OS_USERNAME" -- "/home/${ARCH_OS_USERNAME}/spacevim-installer.sh" --install neovim
+
+                # Remove spacevim installer
+                rm -f "/mnt/home/${ARCH_OS_USERNAME}/spacevim-installer.sh"
+            fi
 
             { # Add init script
                 echo "# exec_install_shell_enhancement | Set default monospace font"
