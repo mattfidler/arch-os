@@ -865,7 +865,7 @@ exec_pacstrap_core() {
         [ "$DEBUG" = "true" ] && sleep 1 && process_return 0 # If debug mode then return
 
         # Core packages
-        local packages=("$ARCH_OS_KERNEL" base sudo linux-firmware zram-generator networkmanager xfsprogs)
+        local packages=("$ARCH_OS_KERNEL" base sudo linux-firmware zram-generator networkmanager)
 
         # Add microcode package
         [ -n "$ARCH_OS_MICROCODE" ] && [ "$ARCH_OS_MICROCODE" != "none" ] && packages+=("$ARCH_OS_MICROCODE")
