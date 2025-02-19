@@ -841,8 +841,8 @@ exec_prepare_disk() {
 
         # Format disk
         mkfs.fat -F 32 -n BOOT "$ARCH_OS_BOOT_PARTITION"
-        [ "$ARCH_OS_ENCRYPTION_ENABLED" = "true" ] && mkfs.ext4 -F -L ROOT /dev/mapper/cryptroot
-        [ "$ARCH_OS_ENCRYPTION_ENABLED" = "false" ] && mkfs.ext4 -F -L ROOT "$ARCH_OS_ROOT_PARTITION"
+        [ "$ARCH_OS_ENCRYPTION_ENABLED" = "true" ] && mkfs.xfs -f -L ROOT /dev/mapper/cryptroot
+        [ "$ARCH_OS_ENCRYPTION_ENABLED" = "false" ] && mkfs.xfs -f -L ROOT "$ARCH_OS_ROOT_PARTITION"
 
         # Mount disk to /mnt
         [ "$ARCH_OS_ENCRYPTION_ENABLED" = "true" ] && mount -v /dev/mapper/cryptroot /mnt
@@ -865,7 +865,7 @@ exec_pacstrap_core() {
         [ "$DEBUG" = "true" ] && sleep 1 && process_return 0 # If debug mode then return
 
         # Core packages
-        local packages=("$ARCH_OS_KERNEL" base sudo linux-firmware zram-generator networkmanager)
+        local packages=("$ARCH_OS_KERNEL" base sudo linux-firmware zram-generator networkmanager xfsprogs)
 
         # Add microcode package
         [ -n "$ARCH_OS_MICROCODE" ] && [ "$ARCH_OS_MICROCODE" != "none" ] && packages+=("$ARCH_OS_MICROCODE")
@@ -2072,10 +2072,10 @@ process_return() {
 print_header() {
     local title="$1"
     clear && gum_purple '
- █████  ██████   ██████ ██   ██      ██████  ███████ 
-██   ██ ██   ██ ██      ██   ██     ██    ██ ██      
-███████ ██████  ██      ███████     ██    ██ ███████ 
-██   ██ ██   ██ ██      ██   ██     ██    ██      ██ 
+ █████  ██████   ██████ ██   ██      ██████  ███████
+██   ██ ██   ██ ██      ██   ██     ██    ██ ██
+███████ ██████  ██      ███████     ██    ██ ███████
+██   ██ ██   ██ ██      ██   ██     ██    ██      ██
 ██   ██ ██   ██  ██████ ██   ██      ██████  ███████'
     local header_version="               v. ${VERSION}"
     [ "$DEBUG" = "true" ] && header_version="               d. ${VERSION}"
