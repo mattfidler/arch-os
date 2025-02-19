@@ -1016,7 +1016,10 @@ exec_install_desktop() {
      echo -e "\n[bioarchlinux]\nServer = https://mirrors.xtom.com/bioarchlinux/\$arch" \
          | tee -a /mnt/etc/pacman.conf
 
-     arch-chroot /mnt pacman -Sy
+     arch-chroot /mnt pacman-key --recv-keys B1F96021DB62254D
+     arch-chroot /mnt pacman-key --finger B1F96021DB62254D
+     arch-chroot /mnt pacman-key --lsign-key B1F96021DB62254D
+     arch-chroot /mnt pacman -Syu
 
      chroot_pacman_install bioarchlinux-keyring
 
