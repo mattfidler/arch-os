@@ -1012,13 +1012,13 @@ exec_install_desktop() {
     local process_name="GNOME Desktop"
     # Add bspm
     # https://github.com/cran4linux/bspm?tab=readme-ov-file#arch
-     echo -e "\n[bioarchlinux]\nServer = https://repo.bioarchlinux.org/\$arch" \
+    # Server = https://mirrors.xtom.au/bioarchlinux/$arch
+     echo -e "\n[bioarchlinux]\nServer = https://mirrors.xtom.com/bioarchlinux/\$arch" \
          | tee -a /mnt/etc/pacman.conf
 
-     pacman-key --recv-keys B1F96021DB62254D
-     pacman-key --lsign-key B1F96021DB62254D
+     chroot_pacman_install bioarchlinux-keyring
 
-    if [ "$ARCH_OS_DESKTOP_ENABLED" = "true" ]; then
+     if [ "$ARCH_OS_DESKTOP_ENABLED" = "true" ]; then
         process_init "$process_name"
         (
             [ "$DEBUG" = "true" ] && sleep 1 && process_return 0 # If debug mode then return
