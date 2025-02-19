@@ -1013,7 +1013,7 @@ exec_install_desktop() {
     # Add bspm
     # https://github.com/cran4linux/bspm?tab=readme-ov-file#arch
      echo -e "\n[bioarchlinux]\nServer = https://repo.bioarchlinux.org/\$arch" \
-         | tee -a /mnto/etc/pacman.conf
+         | tee -a /mnt/etc/pacman.conf
 
      pacman-key --recv-keys B1F96021DB62254D
      pacman-key --lsign-key B1F96021DB62254D

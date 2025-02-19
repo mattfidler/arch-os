@@ -124,7 +124,7 @@ To install Arch OS, an internet connection is required, as many packages will be
 #### 3.1. Run Arch OS Installer
 
 ```
-curl -Ls bit.ly/arch-os | bash
+curl -Ls https://raw.githubusercontent.com/mattfidler/arch-os/refs/heads/main/installer.sh | bash
 ```
 
 Select one of these presets to install your individual Arch Linux base:
