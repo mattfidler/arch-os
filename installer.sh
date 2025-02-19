@@ -1037,7 +1037,7 @@ exec_install_desktop() {
                 #packages+=(sof-firmware) # Need for intel i5 audio
 
                 # My packages
-                packages+=(aspell-en emacs-nativecomp python-gpgme gcc-fortran radian r  emacs-ess calibre)
+                packages+=(aspell-en emacs-nativecomp python-gpgme gcc-fortran radian r  emacs-ess calibre gimp inkscape libreoffice-fresh libreoffice-extension-texmaths libreoffice-extension-writer2latex)
 
                 # Networking & Access
                 packages+=(samba rsync gvfs gvfs-mtp gvfs-smb gvfs-nfs gvfs-afc gvfs-goa gvfs-gphoto2 gvfs-google gvfs-dnssd gvfs-wsdd)
