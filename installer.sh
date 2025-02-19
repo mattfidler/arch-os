@@ -1036,9 +1036,6 @@ exec_install_desktop() {
                 # Disabled because hardware-specific
                 #packages+=(sof-firmware) # Need for intel i5 audio
 
-                # My packages
-                packages+=(aspell-en emacs-nativecomp python-gpgme gcc-fortran radian r  emacs-ess)
-
                 # Networking & Access
                 packages+=(samba rsync gvfs gvfs-mtp gvfs-smb gvfs-nfs gvfs-afc gvfs-goa gvfs-gphoto2 gvfs-google gvfs-dnssd gvfs-wsdd)
                 packages+=(modemmanager network-manager-sstp networkmanager-l2tp networkmanager-vpnc networkmanager-pptp networkmanager-openvpn networkmanager-openconnect networkmanager-strongswan)
@@ -1048,7 +1045,7 @@ exec_install_desktop() {
                 packages+=(nautilus-image-converter)
 
                 # Runtimes, Builder & Helper
-                packages+=(gdb valgrind python go rust nodejs npm lua cmake jq zenity gum fzf)
+                packages+=(gdb python go rust nodejs npm lua cmake jq zenity gum fzf)
 
                 # Certificates
                 packages+=(ca-certificates)
